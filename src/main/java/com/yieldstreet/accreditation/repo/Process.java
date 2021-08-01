@@ -1,5 +1,9 @@
 package com.yieldstreet.accreditation.repo;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.yieldstreet.accreditation.model.Accreditation;
 import com.yieldstreet.accreditation.model.Document;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
@@ -11,9 +15,16 @@ import com.yieldstreet.accreditation.validate.EInvalidVerb;
  * @author Milani
  *
  */
+
 public class Process {
 	
-	
+
+	@Autowired
+	private RepoDocument repositoryDocument;
+
+	@Autowired
+	private RepoAccreditation repoAccreditation;
+
 	/**
 	 * Check if all the required values were informed
 	 * @param acred
@@ -75,30 +86,30 @@ public class Process {
 	 * @return true if it was successful
 	 * @throws EInvalidVerb 
 	 */
-	public boolean persist(JsonAccreditation acred, RepoAccreditation repoA, RepoDocument repoD) throws EInvalidVerb {
+	public boolean persist(JsonAccreditation acred) throws EInvalidVerb {
 		 
 		 // random number to give a pseudo accreditation
 		 int rand = (int)(100*Math.random());
 
 		 if (rand % 2== 0)  
-		     return save(acred, repoA, repoD);
+		     return save(acred);
 		 else  
 			 return false; 
 	
 	}
 	
 	
-	private boolean save(JsonAccreditation acred, RepoAccreditation repoA, RepoDocument repoD	) throws EInvalidVerb {
+	private boolean save(JsonAccreditation acred) throws EInvalidVerb {
 		
 		Accreditation a = new Accreditation();
 		a.setUserId(acred.getUserId());
-		
+
 		//check if alredy exists the Accreditation
-		if (repoA.findByUserId(acred.getUserId())!=null) {
+		if (repoAccreditation.findByUserId(acred.getUserId())!=null) {
 			throw new EInvalidVerb("It must be called with PUT");
 		}
 		
-		repoA.save(a);
+		repoAccreditation.save(a);
 		
 		//save the documents
 		for (JsonDocument d0 : acred.getPay().getDocs()) {
@@ -107,11 +118,14 @@ public class Process {
 			d.setContent(d0.getContent());
 			d.setName(d0.getName());
 			d.setAccreditation(a);
-			repoD.save(d);
+			repositoryDocument.save(d);
 		}
 		
 		return true;
 
 	}
 	
+	public List<Accreditation> findAll() {
+		return repoAccreditation.findAll();
+	}
 }

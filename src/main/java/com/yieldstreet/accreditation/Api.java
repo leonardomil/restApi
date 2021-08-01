@@ -1,10 +1,9 @@
-package com.yieldstreet.accreditation.api;
+package com.yieldstreet.accreditation;
 
 import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,13 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
-import com.yieldstreet.accreditation.model.Document;
+import com.yieldstreet.accreditation.model.Accreditation;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
 import com.yieldstreet.accreditation.repo.Process;
-import com.yieldstreet.accreditation.repo.RepoAccreditation;
-import com.yieldstreet.accreditation.repo.RepoDocument;
 import com.yieldstreet.accreditation.validate.EInvalidVerb;  
 
 /**
@@ -35,75 +30,15 @@ import com.yieldstreet.accreditation.validate.EInvalidVerb;
 
 public class Api {
 	
-	/**
-	 * Class with the Json structure to response the accreditation call
-	 * <p>
-	 * Possibility of improvement  e.g. in a case of invalid json 
-	 * format inform what field is missing
-	 * @author Milani
-	 *
-	 */
-	protected class Returned {
-		
-		@Expose
-		boolean success;
-		@Expose
-	    boolean accredited;
-		
-		String error;
-		
-		public boolean isSuccess() {
-			return success;
-		}
-		
-		public String accredited() {
-			success= true;
-			accredited = true;
-			return new Gson().toJson(this);
-		}
-		
-			
-		public String successful() {
-			success= true;
-			accredited = false;
-			return new Gson().toJson(this);
-		}
-		
-		/**
-		 * This method is used to inform that the process failed
-		 * 
-		 * @return Json with the status of operation
-		 */
-		public String invalidJson(String s) {
-			success= false;
-			accredited = false;
-			error = s;
-			return new Gson().toJson(this);
-		}
-		
-		public String error(String m) {
-			success= false;
-			accredited = false;
-			error = m;
-			return new Gson().toJson(this);
-		}
-
-	}
-	
-	@Autowired
-	private RepoAccreditation repoA;
-	
-	@Autowired
-	private RepoDocument repoD;
 	
     /**
-     * method that attend to a post call 
+     * method that responds to a post call 
      * @param acred
      * @return
      */
 	@PostMapping
 	public ResponseEntity<Object> addAccreditation(@Valid @RequestBody JsonAccreditation acred) {
-		Returned ro = new Returned();
+		Return ro = new Return();
 	
 		try {
 		
@@ -118,7 +53,7 @@ public class Api {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ro.invalidJson(valid));
 			}
 			//persist the info 
-			else if (!repo.persist(acred, repoA, repoD)) {
+			else if (!repo.persist(acred)) {
 				//the client is not accredited
 				return ResponseEntity.status(HttpStatus.OK).body(ro.successful());
 			} 
@@ -139,8 +74,10 @@ public class Api {
 	}
 
 	@GetMapping
-	public List<Document> getAccreditation() {
-		return  repoD.findAll();
+	public List<Accreditation> getAccreditation() {
+		Process repo = new Process();
+		return repo.findAll();
+		
 	}
 
 }
