@@ -1,4 +1,4 @@
-package com.yieldstreet.accreditation;
+package com.yieldstreet.accreditation.api;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;

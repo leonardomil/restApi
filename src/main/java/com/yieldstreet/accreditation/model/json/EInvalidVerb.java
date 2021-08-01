@@ -1,4 +1,4 @@
-package com.yieldstreet.accreditation.validate;
+package com.yieldstreet.accreditation.model.json;
 
 public class EInvalidVerb extends Exception{
 

@@ -1,4 +1,4 @@
-package com.yieldstreet.accreditation;
+package com.yieldstreet.accreditation.api;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yieldstreet.accreditation.model.Accreditation;
+import com.yieldstreet.accreditation.model.json.EInvalidVerb;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
-import com.yieldstreet.accreditation.repo.Process;
-import com.yieldstreet.accreditation.validate.EInvalidVerb;  
+import com.yieldstreet.accreditation.model.json.Validate;
+import com.yieldstreet.accreditation.repository.Process;  
 
 /**
  * Class that will process the requisitions made to the service
@@ -25,9 +25,7 @@ import com.yieldstreet.accreditation.validate.EInvalidVerb;
  */
 
 @RestController  //it will control all the request
-@RequestMapping("user/accreditation")   //
-@Validated
-
+@RequestMapping("user/accreditation")   
 public class Api {
 	
 	
@@ -46,14 +44,14 @@ public class Api {
 			Process repo = new Process();
 
 			//check the json format
-			String valid = repo.isAValidJson(acred);
+			String valid = Validate.isAValidJson(acred);
 					
 					
 			if (!valid.equals("")) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ro.invalidJson(valid));
 			}
-			//persist the info 
-			else if (!repo.persist(acred)) {
+			//persist the information 
+			else if (!repo.save(acred)) {
 				//the client is not accredited
 				return ResponseEntity.status(HttpStatus.OK).body(ro.successful());
 			} 
