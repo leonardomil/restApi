@@ -1,4 +1,4 @@
-package com.yieldstreet.accreditation.api;
+package com.yieldstreet.accreditation.service;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yieldstreet.accreditation.model.Accreditation;
+import com.yieldstreet.accreditation.domain.Accreditation;
 import com.yieldstreet.accreditation.model.json.EInvalidVerb;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
 import com.yieldstreet.accreditation.model.json.Validate;
@@ -35,7 +35,7 @@ public class Api {
      * @return
      */
 	@PostMapping
-	public ResponseEntity<Object> addAccreditation(@Valid @RequestBody JsonAccreditation acred) {
+	public ResponseEntity<Object> addAccreditation(@RequestBody JsonAccreditation acred) {
 		Return ro = new Return();
 	
 		try {

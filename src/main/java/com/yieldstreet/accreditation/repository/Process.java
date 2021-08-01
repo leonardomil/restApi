@@ -3,10 +3,12 @@ package com.yieldstreet.accreditation.repository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-import com.yieldstreet.accreditation.model.Accreditation;
-import com.yieldstreet.accreditation.model.Document;
+import com.yieldstreet.accreditation.domain.Accreditation;
+import com.yieldstreet.accreditation.domain.Document;
 import com.yieldstreet.accreditation.model.json.EInvalidVerb;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
 import com.yieldstreet.accreditation.model.json.JsonDocument;
@@ -16,8 +18,9 @@ import com.yieldstreet.accreditation.model.json.JsonDocument;
  * @author Milani
  *
  */
-
-@Component
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
 public class Process {
 	
 

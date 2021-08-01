@@ -1,4 +1,4 @@
-package com.yieldstreet.accreditation.model;
+package com.yieldstreet.accreditation.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
