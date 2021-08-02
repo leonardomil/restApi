@@ -2,8 +2,7 @@ package com.yieldstreet.accreditation.service;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,9 @@ import com.yieldstreet.accreditation.domain.Accreditation;
 import com.yieldstreet.accreditation.model.json.EInvalidVerb;
 import com.yieldstreet.accreditation.model.json.JsonAccreditation;
 import com.yieldstreet.accreditation.model.json.Validate;
-import com.yieldstreet.accreditation.repository.Process;  
+import com.yieldstreet.accreditation.repository.Process;
+import com.yieldstreet.accreditation.repository.RepoAccreditation;
+import com.yieldstreet.accreditation.repository.RepoDocument;  
 
 /**
  * Class that will process the requisitions made to the service
@@ -29,6 +30,10 @@ import com.yieldstreet.accreditation.repository.Process;
 public class Api {
 	
 	
+	//class that persist the info and validate it
+    @Autowired
+	private Process repo ;
+	
     /**
      * method that responds to a post call 
      * @param acred
@@ -40,8 +45,6 @@ public class Api {
 	
 		try {
 		
-			//class that persist the info and validate it
-			Process repo = new Process();
 
 			//check the json format
 			String valid = Validate.isAValidJson(acred);
@@ -73,7 +76,6 @@ public class Api {
 
 	@GetMapping
 	public List<Accreditation> getAccreditation() {
-		Process repo = new Process();
 		return repo.findAll();
 		
 	}

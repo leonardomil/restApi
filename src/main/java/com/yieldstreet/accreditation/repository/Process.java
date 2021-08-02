@@ -3,9 +3,7 @@ package com.yieldstreet.accreditation.repository;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import com.yieldstreet.accreditation.domain.Accreditation;
 import com.yieldstreet.accreditation.domain.Document;
@@ -14,23 +12,19 @@ import com.yieldstreet.accreditation.model.json.JsonAccreditation;
 import com.yieldstreet.accreditation.model.json.JsonDocument;
 
 /**
- * Class resposible for persistence and validations
+ * Class resposible for persistence 
  * @author Milani
  *
  */
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan
+@Service
 public class Process {
 	
+	@Autowired
+	private RepoDocument rd;
 
 	@Autowired
-	private RepoDocument repositoryDocument;
-
-	@Autowired
-	private RepoAccreditation repoAccreditation;
-
-	
+	private RepoAccreditation ra;
+		
 	/**
 	 * persist the info of Accreditation
 	 * @param acred
@@ -45,13 +39,13 @@ public class Process {
         if (rand % 2== 0) {  
 			Accreditation a = new Accreditation();
 			a.setUserId(acred.getUserId());
-	
+			
 			//check if alredy exists the Accreditation
-			if (repoAccreditation.findByUserId(acred.getUserId())!=null) {
+			if (ra.findByUserId(acred.getUserId())!=null) {
 				throw new EInvalidVerb("It must be called with PUT");
 			}
 			
-			repoAccreditation.save(a);
+			ra.save(a);
 			
 			//save the documents
 			for (JsonDocument d0 : acred.getPay().getDocs()) {
@@ -60,7 +54,7 @@ public class Process {
 				d.setContent(d0.getContent());
 				d.setName(d0.getName());
 				d.setAccreditation(a);
-				repositoryDocument.save(d);
+				rd.save(d);
 			}
 			
 			return true; 
@@ -70,6 +64,6 @@ public class Process {
 	}
 	
 	public List<Accreditation> findAll() {
-		return repoAccreditation.findAll();
+		return ra.findAll();
 	}
 }
